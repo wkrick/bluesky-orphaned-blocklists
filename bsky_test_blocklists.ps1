@@ -1,26 +1,33 @@
-$user = 'HANDLE_OR_DID_GOES_HERE'
+$user = 'DID_OR_HANDLE_GOES_HERE'
 
-# example handle: wkrick.bsky.social
 # example did:    did:plc:5iasteyttnfjalqkrflctzpy
+# example handle: wkrick.bsky.social
 
 $uri_base = 'https://bsky.social/xrpc'
 
-$handle = ''
+#
+# make sure user exists and look up did and handle
+#
 $did = ''
+$handle = ''
 $uri_describeRepo = "$uri_base/com.atproto.repo.describeRepo?repo=$user"
 try {
     $response_describeRepo = Invoke-RestMethod -Uri $uri_describeRepo
-    $handle = $response_describeRepo.handle
     $did = $response_describeRepo.did
+    $handle = $response_describeRepo.handle
     Write-Host 'User exists'
     Write-Host "did: $did"
     Write-Host "handle: $handle"
 } catch {
     $message = ($_.ErrorDetails.Message | ConvertFrom-Json).message
     Write-Host "Exception when looking up user: $message"
+    # we can't continue so exit early
     exit
 }
 
+#
+# get the block lists that the user is subscribed to
+#
 $uri_listRecords = "$uri_base/com.atproto.repo.listRecords?repo=$did&collection=app.bsky.graph.listblock"
 
 $records = (Invoke-RestMethod $uri_listRecords).records
@@ -29,6 +36,9 @@ $num = $records.Length
 Write-Host "$handle is subscribed to $num block lists"
 Write-Host 'Testing...'
 
+#
+# test each block list
+#
 $records | Foreach-Object {
 
     $subject = $_.value.subject
