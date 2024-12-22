@@ -8,6 +8,8 @@ $uri_base = 'https://bsky.social/xrpc'
 #
 # make sure user exists and look up did and handle
 #
+Write-Host ''
+Write-Host 'Looking up user...'
 $did = ''
 $handle = ''
 $uri_describeRepo = "$uri_base/com.atproto.repo.describeRepo?repo=$user"
@@ -15,7 +17,6 @@ try {
     $response_describeRepo = Invoke-RestMethod -Uri $uri_describeRepo
     $did = $response_describeRepo.did
     $handle = $response_describeRepo.handle
-    Write-Host 'User exists'
     Write-Host "did: $did"
     Write-Host "handle: $handle"
 } catch {
@@ -28,13 +29,18 @@ try {
 #
 # get the block lists that the user is subscribed to
 #
-$uri_listRecords = "$uri_base/com.atproto.repo.listRecords?repo=$did&collection=app.bsky.graph.listblock"
+$uri_listRecords = "$uri_base/com.atproto.repo.listRecords?repo=$did&collection=app.bsky.graph.listblock&limit=100"
+
+#$result = Invoke-RestMethod $uri_listRecords
+#$result | Get-Member
+
 
 $records = (Invoke-RestMethod $uri_listRecords).records
 $num = $records.Length
 
 Write-Host "$handle is subscribed to $num block lists"
-Write-Host 'Testing...'
+Write-Host ''
+Write-Host 'Testing block lists...'
 
 #
 # test each block list
@@ -52,8 +58,8 @@ $records | Foreach-Object {
         Invoke-RestMethod -Uri $uri_getRecord | Out-Null
     } catch {
         Write-Host '----'
-        Write-Host "Exception when testing list: $subject"
+        Write-Host "$subject"
         $message = ($_.ErrorDetails.Message | ConvertFrom-Json).message
-        Write-Host "Error message: $message"
+        Write-Host "$message"
     }
 }
