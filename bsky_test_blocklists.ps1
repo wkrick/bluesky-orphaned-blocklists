@@ -1,7 +1,13 @@
-$user = 'DID_OR_HANDLE_GOES_HERE'
-
+# This script needs a user did or handle
 # example did:    did:plc:5iasteyttnfjalqkrflctzpy
 # example handle: wkrick.bsky.social
+
+$user = 'DID_OR_HANDLE_GOES_HERE'
+$user = 'wkrick.bsky.social'
+
+#####################################################################
+# DO NOT MODIFY ANYTHING BELOW THIS LINE
+#####################################################################
 
 $uri_base = 'https://bsky.social/xrpc'
 
@@ -31,10 +37,6 @@ try {
 #
 $uri_listRecords = "$uri_base/com.atproto.repo.listRecords?repo=$did&collection=app.bsky.graph.listblock&limit=100"
 
-#$result = Invoke-RestMethod $uri_listRecords
-#$result | Get-Member
-
-
 $records = (Invoke-RestMethod $uri_listRecords).records
 $num = $records.Length
 
@@ -63,3 +65,6 @@ $records | Foreach-Object {
         Write-Host "$message"
     }
 }
+
+Write-Host '----'
+Write-Host 'Done.'
