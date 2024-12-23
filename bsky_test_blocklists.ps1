@@ -3,7 +3,6 @@
 # example handle: wkrick.bsky.social
 
 $user = 'DID_OR_HANDLE_GOES_HERE'
-$user = 'wkrick.bsky.social'
 
 #####################################################################
 # DO NOT MODIFY ANYTHING BELOW THIS LINE
