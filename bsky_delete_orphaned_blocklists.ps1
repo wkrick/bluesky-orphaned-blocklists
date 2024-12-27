@@ -74,10 +74,12 @@ $records | Foreach-Object {
     try {
         Invoke-RestMethod -Uri $uri_getRecord | Out-Null
     } catch {
-        $orphan = $true
+        $message = ($_.ErrorDetails.Message | ConvertFrom-Json).message
+        if (($message -match "^Could not find repo")-or ($message -match "^Could not locate record")) {
+            $orphan = $true
+        }
         Write-Host '----'
         Write-Host "$subject"
-        $message = ($_.ErrorDetails.Message | ConvertFrom-Json).message
         Write-Host "$message"
     }
 
