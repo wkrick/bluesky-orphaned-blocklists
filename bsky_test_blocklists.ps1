@@ -61,7 +61,13 @@ $records | Foreach-Object {
         Write-Host '----'
         Write-Host "$subject"
         $message = ($_.ErrorDetails.Message | ConvertFrom-Json).message
-        Write-Host "$message"
+        $patterns = '^Could not find repo|^Could not locate record'
+        if ($message -match $patterns) {
+            Write-Host "$message"
+        } else {
+            Write-Host 'UNEXPECTED EXCEPTION...'
+            Write-Host "$message"
+        }
     }
 }
 
