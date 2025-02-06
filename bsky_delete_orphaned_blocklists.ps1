@@ -19,7 +19,7 @@ $uri_base = 'https://bsky.social/xrpc'
 # make sure user exists and look up did and handle
 #
 Write-Host ''
-Write-Host 'Looking up user...'
+Write-Host 'Verifying user exists...'
 $did = ''
 $handle = ''
 $uri_describeRepo = "$uri_base/com.atproto.repo.describeRepo?repo=$user"
